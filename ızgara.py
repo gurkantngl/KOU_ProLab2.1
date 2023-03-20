@@ -9,7 +9,6 @@ from utils import stop_thread
 import sys
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
-import uygulama
 from random import randint, choice
 
 class Engel():
@@ -36,7 +35,6 @@ class problem2():
         self.WIDTH = (self.cell_size * grid.sutun) + (2 * self.cell_padding)
         self.HEIGHT = self.WIDTH + self.HEADER
         self.WINDOW = (self.WIDTH, self.HEIGHT)
-        self.refreshTime = pygame.time.get_ticks()
         self.TITLE = "Problem2"
         self.SCREEN = pygame.display.set_mode(self.WINDOW)
         pygame.display.set_caption(self.TITLE)
@@ -64,20 +62,20 @@ class problem2():
         print("type(EXIT): ",type(self.EXIT))
         self.SOLVE_THREAD = threading.Thread(target=solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
         self.SOLVE_THREAD.start()
-        self.infoWindow = uygulama.uygulama()
+        
         self.infoVisible = False
         while True:
             self.CLOCK.tick(60)
             if not self.SOLVE_THREAD.is_alive() and not self.infoVisible:
+                self.draw_mazeEnd(self.MAZE)
+                self.infoWindow = uygulama()
                 self.infoWindow.show()
                 self.infoVisible = True
-                self.draw_mazeEnd(self.MAZE)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
                         stop_thread(self.SOLVE_THREAD)
                         self.SOLVE_THREAD = None
-                        print((pygame.time.get_ticks() - self.refreshTime)/1000.0)
                     exit(0)        
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
@@ -98,8 +96,9 @@ class problem2():
 
 
     def refresh(self):
+        problem2.kareSayısı = 0
         self.infoVisible = False
-        self.refreshTime = pygame.time.get_ticks()
+        problem2.refreshTime = pygame.time.get_ticks()
         pygame.time.set_timer=0
         if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
             stop_thread(self.SOLVE_THREAD)
@@ -201,8 +200,10 @@ class problem2():
                 if cell==1:
                     color = self.BlackColor
                 elif cell == 2:
+                    problem2.kareSayısı += 1
                     color = self.GreenColor
                 elif cell == 3:
+                    problem2.kareSayısı += 1
                     color = self.RedColor
                 else:
                     color = self.WhiteColor
@@ -445,7 +446,48 @@ class grid(QMainWindow, problem2):
         maze.init()
         maze.main()
         
+class uygulama(QMainWindow):
+    def __init__(self):
+        super(uygulama, self).__init__()
+        self.initUI()
     
+    def initUI(self):
+        self.setFixedSize(400, 300)
+        self.setWindowTitle("Bitti")
+        myFont = QtGui.QFont('MS Shell Dlg2',14)
+        myFont.setBold(True)
+        myFont.setPointSize(10)
+        
+        #Girişte
+        self.label1 = QtWidgets.QLabel(self)
+        self.label1.setText("Labirent Çözüldü")
+        self.label1.setFixedSize(150, 50)
+        self.label1.move(125, 50)
+        self.label1.setFont(myFont)
+        
+        myFont.setPointSize(8)
+        self.label2 = QtWidgets.QLabel(self)
+        self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem2.refreshTime)/1000.0),2)) + " sn")
+        self.label2.setFixedSize(150 ,40)
+        self.label2.move(125, 120)
+        self.label2.setFont(myFont)
+        
+        self.label3 = QtWidgets.QLabel(self)
+        self.label3.setText("Gezilen Kare Sayısı: " +  str(problem2.kareSayısı))
+        self.label3.setFixedSize(160 ,40)
+        self.label3.move(80, 160)
+        self.label3.setFont(myFont)
+        
+        myFont.setPointSize(10)
+        self.button1 = QtWidgets.QPushButton(self)
+        self.button1.setText("Kapat")
+        self.button1.setFont(myFont)
+        self.button1.clicked.connect(self.button_clicked_button1)
+        self.button1.setFixedSize(100, 40)
+        self.button1.move(150,220)
+        
+    def button_clicked_button1(self):
+        self.setVisible(False)    
         
 def window():
     app = QApplication(sys.argv)
