@@ -15,8 +15,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
 
 class problem1():
     kareSayısı = 0
+    pygame.time.set_timer = 0
     refreshTime = pygame.time.get_ticks()
     FONT_SIZE = 25
+    waitTime = 0.1
     def init(self):
         pygame.init()
         self.cellSize = 40
@@ -40,7 +42,6 @@ class problem1():
         self.OrangeColor = (255, 100, 0)
         self.BrownColor = (75, 35, 15)
         
-        self.BUTTONS = []
         self.buttonList = []
         self.SOLVE_THREAD = None
         
@@ -67,14 +68,28 @@ class problem1():
         self.HEIGHT = self.WIDTH + self.HEADER
         self.WINDOW = (self.WIDTH, self.HEIGHT)
         self.SCREEN = pygame.display.set_mode(self.WINDOW)
+        self.drawMazeEnd(self.currMaze)
+        
+        run = True
+        while run:
+            for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit(0)
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                            mouse_pos = pygame.mouse.get_pos()
+                            #self.dispatcher_click(mouse_pos)
+                            if self.buttonList[1].collidepoint(mouse_pos):
+                                run = False
+        
         
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
         self.SOLVE_THREAD.start()
         self.infoVisible = False
-     
+
+        run2 = True
         while True:
             self.CLOCK.tick(60)
-            if not self.SOLVE_THREAD.is_alive() and not self.infoVisible:
+            if not self.SOLVE_THREAD.is_alive() and not self.infoVisible and run2:
                 self.drawMazeEnd(self.currMaze)
                 self.infoWindow = uygulama()
                 self.infoWindow.show()
@@ -91,7 +106,6 @@ class problem1():
                     if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
                         stop_thread(self.SOLVE_THREAD)
                         self.SOLVE_THREAD = None
-                        print((pygame.time.get_ticks() - problem1.refreshTime)/1000.0)
                     exit(0)
                 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -99,31 +113,34 @@ class problem1():
                         #self.dispatcher_click(mouse_pos)
                         
                         if self.buttonList[0].collidepoint(mouse_pos):
-                            pass
+                            problem1.kareSayısı = 0
+                            win.bp1.setVisible(True)
+                            win.bp2.setVisible(True)
+                            win.textbox1.setVisible(False)
+                            win.textbox2.setVisible(False)
+                            win.label3.setVisible(False)
+                            win.label4.setVisible(False)
+                            win.label5.setVisible(False)
+                            win.bg2.setVisible(False)
+                            win.show()
+                            if self.SOLVE_THREAD.is_alive():
+                                stop_thread(self.SOLVE_THREAD)
+                            problem1.waitTime = 0.1
+                            run2 = False
                         
                         elif self.buttonList[1].collidepoint(mouse_pos):
-                            pass
+                            problem1.refreshTime = pygame.time.get_ticks()
+                            problem1.kareSayısı = 0
+                            problem1.waitTime = 0.1
+                            self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
+                            self.SOLVE_THREAD.start()
+                            self.infoVisible = False
                         
                         elif self.buttonList[2].collidepoint(mouse_pos):
                             self.changeMaze()
                         
                         elif self.buttonList[3].collidepoint(mouse_pos):
-                            pass
-    
-    
-    
-    
-    def dispatcher_click(self, pos):
-        for button in self.BUTTONS:
-            x, y, length, height = button['x'], button['y'], button['length'], button['height']
-            pos_x, pos_y = pos
-            if x <= pos_x <= x + length and y <= pos_y <= y + height:
-                if self.mazeNumber == 1:
-                    self.mazeNumber == 2
-                else:
-                    self.mazeNumber == 1
-                button['click']()
-            
+                            problem1.waitTime = 0
     
                 
     def draw_rect(self, x, y, len, color):
@@ -142,9 +159,11 @@ class problem1():
     
     
     def changeMaze(self):
+        problem1.refreshTime = pygame.time.get_ticks()
+        self.buttonList.clear()
+        problem1.waitTime = 0.1
         problem1.kareSayısı = 0
         self.infoVisible = False
-        problem1.refreshTime = pygame.time.get_ticks()
         pygame.time.set_timer = 0
         global Maze, Entrance, Exit, SOLVE_THREAD
         if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
@@ -265,44 +284,12 @@ class problem1():
     def drawMazeStart(self, maze, curPos):
         #self.SCREEN.fill(self.GrayColor)
         self.drawButton(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
-        if len(self.BUTTONS) == 0:
-            self.BUTTONS.append({
-                'x' : 2,
-                'y' : 2,
-                'length' : (self.WIDTH - 4)/4,
-                'height' : self.HEADER  - 4,
-                'click' : self.changeMaze
-            })
             
         self.drawButton(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
-        if len(self.BUTTONS) == 1:
-            self.BUTTONS.append({
-                'x' : 2 + (self.WIDTH - 4)/4,
-                'y' : 2,
-                'length' : (self.WIDTH - 4)/4,
-                'height' : self.HEADER  - 4,
-                'click' : self.changeMaze
-            })
         
         self.drawButton(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
-        if len(self.BUTTONS) == 2:
-            self.BUTTONS.append({
-                'x' : 2 + ((self.WIDTH - 4)/4) * 2,
-                'y' : 2,
-                'length' : (self.WIDTH - 4)/4,
-                'height' : self.HEADER  - 4,
-                'click' : self.changeMaze
-            })
             
         self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
-        if len(self.BUTTONS) == 3:
-            self.BUTTONS.append({
-                'x' : 2 + ((self.WIDTH - 4)/4) * 3,
-                'y' : 2,
-                'length' : (self.WIDTH - 4)/4,
-                'height' : self.HEADER  - 4,
-                'click' : self.changeMaze
-            })    
         
         for y in range(len(maze)):
             for x in range(len(maze)):
@@ -380,15 +367,13 @@ class problem1():
     def drawMazeEnd(self, maze):
         print(maze)
         #self.SCREEN.fill(self.GrayColor) 
-        self.drawButton(2, 2, self.WIDTH - 4, self.HEADER - 4, 'Değiştir')
-        if len(self.BUTTONS) == 0:
-            self.BUTTONS.append({
-                'x' : 2,
-                'y' : 2,
-                'length' : self.WIDTH - 4,
-                'height' : self.HEADER - 4,
-                'click' : self.changeMaze
-            })
+        self.drawButton(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
+        
+        self.drawButton(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
+        
+        self.drawButton(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
+            
+        self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
         
         size = len(maze)
         for y in range(size):
@@ -411,8 +396,7 @@ class problem1():
     
     
     def solve_maze(self, maze, pos, end, callback):
-        wait_time = 0.1
-        time.sleep(wait_time)
+        time.sleep(problem1.waitTime)
         
         # Çıkışa ulaşmak
         if pos[0] == end[0] and pos[1] == end[1]:
@@ -474,6 +458,7 @@ class problem1():
 class problem2():
     kareSayısı = 0
     refreshTime = pygame.time.get_ticks()
+    waitTime = 0.1
     def init(self):
         pygame.init()
         self.cell_size = 40
@@ -487,7 +472,8 @@ class problem2():
         pygame.display.set_caption(self.TITLE)
         self.CLOCK = pygame.time.Clock()
         self.startTime = pygame.time.get_ticks()
-
+        self.buttonList = []
+        
         #Colors
         self.WhiteColor = (255, 255, 255)
         self.BlackColor = (0, 0, 0)
@@ -507,13 +493,28 @@ class problem2():
         print("type(MAZE): ", type(self.MAZE))
         print("type(ENTRANCE): ", type(self.ENTRANCE))
         print("type(EXIT): ",type(self.EXIT))
+        
+        self.draw_mazeEnd(self.MAZE)
+        
+        run = True
+        while run:
+            for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit(0)
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                            mouse_pos = pygame.mouse.get_pos()
+                            #self.dispatcher_click(mouse_pos)
+                            if self.buttonList[1].collidepoint(mouse_pos):
+                                run = False
+        
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
         self.SOLVE_THREAD.start()
-        
         self.infoVisible = False
+        
+        run2 = True
         while True:
             self.CLOCK.tick(60)
-            if not self.SOLVE_THREAD.is_alive() and not self.infoVisible:
+            if not self.SOLVE_THREAD.is_alive() and not self.infoVisible and run2:
                 self.draw_mazeEnd(self.MAZE)
                 self.infoWindow = uygulama()
                 self.infoWindow.show()
@@ -526,11 +527,31 @@ class problem2():
                     exit(0)        
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    self.dispatcher_click(mouse_pos)
-                    """if self.BUTTONS[0].collidepoint(mouse_pos):
+                    #self.dispatcher_click(mouse_pos)
+                    if self.buttonList[0].collidepoint(mouse_pos):
+                            problem2.kareSayısı = 0
+                            win.bp1.setVisible(True)
+                            win.bp2.setVisible(True)
+                            win.textbox1.setVisible(False)
+                            win.textbox2.setVisible(False)
+                            win.label3.setVisible(False)
+                            win.label4.setVisible(False)
+                            win.label5.setVisible(False)
+                            win.bg2.setVisible(False)
+                            win.show()
+                            if self.SOLVE_THREAD.is_alive():
+                                stop_thread(self.SOLVE_THREAD)
+                            problem2.waitTime = 0.1
+                            run2 = False
+                    elif self.buttonList[1].collidepoint(mouse_pos):
+                        pass
+                        
+                    elif self.buttonList[2].collidepoint(mouse_pos):
                         self.refresh()
-                    else:
-                        pass"""
+                        
+                        
+                    elif self.buttonList[3].collidepoint(mouse_pos):
+                        problem2.waitTime = 0
             
         
     def draw_rect(self, x, y, len, color):
@@ -540,37 +561,48 @@ class problem2():
     def draw_button(self, x, y, len, height, text):
         self.FONT_SIZE = 25
         FONT = pygame.font.SysFont("MS Shell Dlg2", self.FONT_SIZE)
-        pygame.draw.rect(self.SCREEN, self.WhiteColor, [x, y, len, height], 1)
+        button = pygame.draw.rect(self.SCREEN, self.WhiteColor, [x, y, len, height], 1)
+        self.buttonList.append(button)
         text_surface = FONT.render(text, True, self.WhiteColor)
-        text_len = text.__len__() * self.FONT_SIZE
+        text_len = text.__len__() * 7
         self.SCREEN.blit(text_surface, (x + (len - text_len) / 2, y + 2))
 
 
     def refresh(self):
+        problem2.refreshTime = pygame.time.get_ticks()
+        pygame.time.set_timer = 0
+        problem2.waitTime = 0.1
         problem2.kareSayısı = 0
         self.infoVisible = False
-        problem2.refreshTime = pygame.time.get_ticks()
-        pygame.time.set_timer=0
+        pygame.time.set_timer = 0
         if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
             stop_thread(self.SOLVE_THREAD)
             self.SOLVE_THREAD = None
-        size = 20
         self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)
+        
+        self.draw_mazeEnd(self.MAZE)
+        run = True
+        while run:
+            for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit(0)
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                            mouse_pos = pygame.mouse.get_pos()
+                            #self.dispatcher_click(mouse_pos)
+                            if self.buttonList[1].collidepoint(mouse_pos):
+                                run = False
+        
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
         self.SOLVE_THREAD.start()
 
 
     def draw_mazeStart(self, maze, cur_pos):
         #self.SCREEN.fill(self.GrayColor)
-        self.draw_button(2, 2, self.WIDTH - 4, self.HEADER - 4, 'Değiştir')
-        if len(self.BUTTONS) == 0:
-            self.BUTTONS.append({
-                'x': 2,
-                'y': 2,
-                'length': self.WIDTH - 4,
-                'height': self.HEADER - 4,
-                'click': self.refresh
-            })
+        self.draw_button(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
+        self.draw_button(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
+        self.draw_button(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
+        self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+
 
         size = len(maze)
         for y in range(size):
@@ -632,15 +664,13 @@ class problem2():
 
     def draw_mazeEnd(self, maze):
         #self.SCREEN.fill(self.GrayColor)
-        self.draw_button(2, 2, self.WIDTH - 4, self.HEADER - 4, 'Değiştir')
-        if len(self.BUTTONS) == 0:
-            self.BUTTONS.append({
-                'x': 2,
-                'y': 2,
-                'length': self.WIDTH - 4,
-                'height': self.HEADER - 4,
-                'click': self.refresh
-            })
+        self.draw_button(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
+        
+        self.draw_button(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
+        
+        self.draw_button(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
+            
+        self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
 
         size = len(maze)
         self.cell_padding = (self.WIDTH - (self.cell_size * size)) / 2
@@ -660,15 +690,6 @@ class problem2():
                     color = self.WhiteColor
                 self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
         pygame.display.flip()
-    
-
-    def dispatcher_click(self, pos):
-        for button in self.BUTTONS:
-            x, y, length, height = button['x'], button['y'], button['length'], button['height']
-            pos_x, pos_y = pos
-            if x <= pos_x <= x + length and y <= pos_y <= y + height:
-                button['click']()
-    
     
     
     def valid(self, maze, x, y):
@@ -700,7 +721,7 @@ class problem2():
 
 
     def solve_maze(self, maze, pos, end, callback):
-        time.sleep(0.1)
+        time.sleep(problem2.waitTime)
         # Çıkışa Ulaşmak
         if pos[0] == end[0] and pos[1] == end[1]:
             maze[pos[1]][pos[0]] = 2
@@ -887,12 +908,19 @@ class uygulama(QMainWindow):
         self.label2.setFont(myFont)
         
         self.label3 = QtWidgets.QLabel(self)
+        print("problem1.kareSayısı: ", problem1.kareSayısı)
+        print("problem2.kareSayısı: ", problem2.kareSayısı)
+        print("pygame.get_ticks: ",pygame.time.get_ticks()/1000)
+        print("problem1.refreshTime: ",problem1.refreshTime)
+        print("problem2.refreshTime: ",problem2.refreshTime)
         if problem1.kareSayısı == 0:
             self.label3.setText("Gezilen Kare Sayısı: " +  str(problem2.kareSayısı))
             self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem2.refreshTime)/1000.0),2)) + " sn")
+            problem2.refreshTime = pygame.time.get_ticks()
         else:
             self.label3.setText("Gezilen Kare Sayısı: " +  str(problem1.kareSayısı))
             self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem1.refreshTime)/1000.0),2)) + " sn")
+            problem1.refreshTime = pygame.time.get_ticks()
         self.label3.setFixedSize(160 ,40)
         self.label3.move(80, 160)
         self.label3.setFont(myFont)
@@ -1008,17 +1036,17 @@ class menu(QMainWindow, problem1):
         maze = problem1()
         maze.init()
         maze.main()
+        
     def button_clicked_bg2(self):
         menu.satır = int(self.textbox1.text())
         menu.sutun = int(self.textbox2.text())
         maze = problem2()
-        self.setVisible(False)
+        self.close()
         maze.init()
         maze.main()
-    
-def window():
-    app = QApplication(sys.argv)
-    win = menu()
-    win.show()
-    sys.exit(app.exec_())
-window()   
+
+app = QApplication(sys.argv)
+win = menu()
+win.show()
+sys.exit(app.exec_())
+   
