@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
 
 class problem1():
     kareSayısı = 0
+    enKısaYol = 0
     pygame.time.set_timer = 0
     refreshTime = pygame.time.get_ticks()
     FONT_SIZE = 25
@@ -78,8 +79,10 @@ class problem1():
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                             mouse_pos = pygame.mouse.get_pos()
                             #self.dispatcher_click(mouse_pos)
-                            if self.buttonList[1].collidepoint(mouse_pos):
+                            if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
+                                problem1.refreshTime = pygame.time.get_ticks()
+                        
         
         
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
@@ -94,6 +97,19 @@ class problem1():
                 self.infoWindow = uygulama()
                 self.infoWindow.show()
                 self.infoVisible = True
+                with open("problem1.txt","w") as file:
+                    for maze in self.currMaze:
+                        for i in range(len(maze)):
+                            if maze[i] == 2:
+                                file.write("-")
+                            elif maze[i] == 3:
+                                file.write("x")
+                            else:
+                                file.write(" ")
+                        file.write("\n")
+                file.close()
+                
+                    
                 for maze in self.currMaze:
                     for i in range(len(maze)):
                         if maze[i] == 2:
@@ -113,33 +129,18 @@ class problem1():
                         #self.dispatcher_click(mouse_pos)
                         
                         if self.buttonList[0].collidepoint(mouse_pos):
-                            problem1.kareSayısı = 0
-                            win.bp1.setVisible(True)
-                            win.bp2.setVisible(True)
-                            win.textbox1.setVisible(False)
-                            win.textbox2.setVisible(False)
-                            win.label3.setVisible(False)
-                            win.label4.setVisible(False)
-                            win.label5.setVisible(False)
-                            win.bg2.setVisible(False)
-                            win.show()
-                            if self.SOLVE_THREAD.is_alive():
-                                stop_thread(self.SOLVE_THREAD)
-                            problem1.waitTime = 0.1
-                            run2 = False
-                        
-                        elif self.buttonList[1].collidepoint(mouse_pos):
                             problem1.refreshTime = pygame.time.get_ticks()
                             problem1.kareSayısı = 0
+                            problem1.enKısaYol = 0
                             problem1.waitTime = 0.1
                             self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
                             self.SOLVE_THREAD.start()
                             self.infoVisible = False
                         
-                        elif self.buttonList[2].collidepoint(mouse_pos):
+                        elif self.buttonList[1].collidepoint(mouse_pos):
                             self.changeMaze()
                         
-                        elif self.buttonList[3].collidepoint(mouse_pos):
+                        elif self.buttonList[2].collidepoint(mouse_pos):
                             problem1.waitTime = 0
     
                 
@@ -163,6 +164,7 @@ class problem1():
         self.buttonList.clear()
         problem1.waitTime = 0.1
         problem1.kareSayısı = 0
+        problem1.enKısaYol = 0
         self.infoVisible = False
         pygame.time.set_timer = 0
         global Maze, Entrance, Exit, SOLVE_THREAD
@@ -199,6 +201,24 @@ class problem1():
                 problem1.FONT_SIZE = 20
         else:
                 problem1.FONT_SIZE = 25
+             
+        self.drawMazeEnd(self.currMaze)   
+        run = True
+        while run:
+            for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit(0)
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                            mouse_pos = pygame.mouse.get_pos()
+                            #self.dispatcher_click(mouse_pos)
+                            if self.buttonList[0].collidepoint(mouse_pos):
+                                run = False
+                                problem1.refreshTime = pygame.time.get_ticks()
+                            
+                            elif self.buttonList[1].collidepoint(mouse_pos):
+                                self.changeMaze()
+                                
+                                
         self.SOLVE_THREAD = threading.Thread(target = self.solve_maze, args = (self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
         self.SOLVE_THREAD.start()
         
@@ -283,13 +303,13 @@ class problem1():
     
     def drawMazeStart(self, maze, curPos):
         #self.SCREEN.fill(self.GrayColor)
-        self.drawButton(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
+        self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
             
-        self.drawButton(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
+        self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
         
-        self.drawButton(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
+        self.drawButton(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
             
-        self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+        #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
         
         for y in range(len(maze)):
             for x in range(len(maze)):
@@ -367,13 +387,13 @@ class problem1():
     def drawMazeEnd(self, maze):
         print(maze)
         #self.SCREEN.fill(self.GrayColor) 
-        self.drawButton(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
+        self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
         
-        self.drawButton(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
+        self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
         
-        self.drawButton(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
+        self.drawButton(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
             
-        self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+        #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
         
         size = len(maze)
         for y in range(size):
@@ -384,6 +404,7 @@ class problem1():
                     
                 elif cell == 2:
                     problem1.kareSayısı += 1
+                    problem1.enKısaYol += 1
                     color = self.GreenColor
                     
                 elif cell == 3:
@@ -457,6 +478,7 @@ class problem1():
 
 class problem2():
     kareSayısı = 0
+    enKısaYol = 0
     refreshTime = pygame.time.get_ticks()
     waitTime = 0.1
     def init(self):
@@ -486,14 +508,7 @@ class problem2():
 
     def main(self):
         
-        self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)
-        print("MAZE: ", self.MAZE)
-        print("ENTRANCE: ", self.ENTRANCE)
-        print("Exit: ", self.EXIT)
-        print("type(MAZE): ", type(self.MAZE))
-        print("type(ENTRANCE): ", type(self.ENTRANCE))
-        print("type(EXIT): ",type(self.EXIT))
-        
+        self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)        
         self.draw_mazeEnd(self.MAZE)
         
         run = True
@@ -504,8 +519,13 @@ class problem2():
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                             mouse_pos = pygame.mouse.get_pos()
                             #self.dispatcher_click(mouse_pos)
-                            if self.buttonList[1].collidepoint(mouse_pos):
+                            if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
+                                problem2.refreshTime = pygame.time.get_ticks()
+                            
+                            elif self.buttonList[1].collidepoint(mouse_pos):
+                                self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)
+                                self.draw_mazeEnd(self.MAZE)
         
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
         self.SOLVE_THREAD.start()
@@ -519,6 +539,27 @@ class problem2():
                 self.infoWindow = uygulama()
                 self.infoWindow.show()
                 self.infoVisible = True
+                
+                with open("problem2.txt","w") as file:
+                    for maze in self.MAZE:
+                        for i in range(len(maze)):
+                            if maze[i] == 2:
+                                file.write("-")
+                            elif maze[i] == 3:
+                                file.write("*")
+                            else:
+                                file.write(" ")
+                        file.write("\n")
+                file.close()
+                
+                for maze in self.MAZE:
+                    for i in range(len(maze)):
+                        if maze[i] == 2:
+                            maze[i] = 0
+                        elif maze[i] == 3:
+                            maze[i] = 4
+                
+                
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
@@ -528,29 +569,21 @@ class problem2():
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     #self.dispatcher_click(mouse_pos)
+                    
                     if self.buttonList[0].collidepoint(mouse_pos):
+                            problem2.refreshTime = pygame.time.get_ticks()
                             problem2.kareSayısı = 0
-                            win.bp1.setVisible(True)
-                            win.bp2.setVisible(True)
-                            win.textbox1.setVisible(False)
-                            win.textbox2.setVisible(False)
-                            win.label3.setVisible(False)
-                            win.label4.setVisible(False)
-                            win.label5.setVisible(False)
-                            win.bg2.setVisible(False)
-                            win.show()
-                            if self.SOLVE_THREAD.is_alive():
-                                stop_thread(self.SOLVE_THREAD)
+                            problem2.enKısaYol = 0
                             problem2.waitTime = 0.1
-                            run2 = False
-                    elif self.buttonList[1].collidepoint(mouse_pos):
-                        pass
+                            self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
+                            self.SOLVE_THREAD.start()
+                            self.infoVisible = False
                         
-                    elif self.buttonList[2].collidepoint(mouse_pos):
+                    elif self.buttonList[1].collidepoint(mouse_pos):
                         self.refresh()
                         
                         
-                    elif self.buttonList[3].collidepoint(mouse_pos):
+                    elif self.buttonList[2].collidepoint(mouse_pos):
                         problem2.waitTime = 0
             
         
@@ -573,6 +606,7 @@ class problem2():
         pygame.time.set_timer = 0
         problem2.waitTime = 0.1
         problem2.kareSayısı = 0
+        problem2.enKısaYol = 0
         self.infoVisible = False
         pygame.time.set_timer = 0
         if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
@@ -589,19 +623,23 @@ class problem2():
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                             mouse_pos = pygame.mouse.get_pos()
                             #self.dispatcher_click(mouse_pos)
-                            if self.buttonList[1].collidepoint(mouse_pos):
+                            if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
-        
+                                problem2.refreshTime = pygame.time.get_ticks()
+                                
+                            elif self.buttonList[1].collidepoint(mouse_pos):
+                                self.refresh()
+                                        
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
         self.SOLVE_THREAD.start()
 
 
     def draw_mazeStart(self, maze, cur_pos):
         #self.SCREEN.fill(self.GrayColor)
-        self.draw_button(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
-        self.draw_button(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
-        self.draw_button(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
-        self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+        self.draw_button(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
+        self.draw_button(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
+        self.draw_button(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
+        #self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
 
 
         size = len(maze)
@@ -664,13 +702,13 @@ class problem2():
 
     def draw_mazeEnd(self, maze):
         #self.SCREEN.fill(self.GrayColor)
-        self.draw_button(2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Menü')
+        self.draw_button(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
         
-        self.draw_button(2 + (self.WIDTH - 4)/4, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Çalıştır')
+        self.draw_button(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
         
-        self.draw_button(2 + ((self.WIDTH - 4)/4) * 2, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Değiştir')
+        self.draw_button(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
             
-        self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+        #self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
 
         size = len(maze)
         self.cell_padding = (self.WIDTH - (self.cell_size * size)) / 2
@@ -682,6 +720,7 @@ class problem2():
                     color = self.BlackColor
                 elif cell == 2:
                     problem2.kareSayısı += 1
+                    problem2.enKısaYol += 1
                     color = self.GreenColor
                 elif cell == 3:
                     problem2.kareSayısı += 1
@@ -891,39 +930,43 @@ class uygulama(QMainWindow):
         self.setWindowTitle("Bitti")
         myFont = QtGui.QFont('MS Shell Dlg2',14)
         myFont.setBold(True)
-        myFont.setPointSize(10)
+        myFont.setPointSize(12)
         
         #Girişte
         self.label1 = QtWidgets.QLabel(self)
         self.label1.setText("Labirent Çözüldü")
-        self.label1.setFixedSize(150, 50)
-        self.label1.move(125, 50)
+        self.label1.setFixedSize(200, 50)
+        self.label1.move(125, 30)
         self.label1.setFont(myFont)
         
         myFont.setPointSize(8)
         self.label2 = QtWidgets.QLabel(self)
         
         self.label2.setFixedSize(150 ,40)
-        self.label2.move(125, 120)
+        self.label2.move(125, 80)
         self.label2.setFont(myFont)
         
         self.label3 = QtWidgets.QLabel(self)
-        print("problem1.kareSayısı: ", problem1.kareSayısı)
-        print("problem2.kareSayısı: ", problem2.kareSayısı)
-        print("pygame.get_ticks: ",pygame.time.get_ticks()/1000)
-        print("problem1.refreshTime: ",problem1.refreshTime)
-        print("problem2.refreshTime: ",problem2.refreshTime)
+        self.label3.setFixedSize(160 ,40)
+        self.label3.move(80, 120)
+        self.label3.setFont(myFont)
+        
+        self.label4 = QtWidgets.QLabel(self)
+        self.label4.setFixedSize(125, 40)
+        self.label4.move(125, 160)
+        self.label4.setFont(myFont)
+        
         if problem1.kareSayısı == 0:
             self.label3.setText("Gezilen Kare Sayısı: " +  str(problem2.kareSayısı))
             self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem2.refreshTime)/1000.0),2)) + " sn")
+            self.label4.setText("En Kısa Yol: " + str(problem2.enKısaYol))
             problem2.refreshTime = pygame.time.get_ticks()
         else:
             self.label3.setText("Gezilen Kare Sayısı: " +  str(problem1.kareSayısı))
             self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem1.refreshTime)/1000.0),2)) + " sn")
+            self.label4.setText("En Kısa Yol: "+ str(problem1.enKısaYol))
             problem1.refreshTime = pygame.time.get_ticks()
-        self.label3.setFixedSize(160 ,40)
-        self.label3.move(80, 160)
-        self.label3.setFont(myFont)
+        
         
         myFont.setPointSize(10)
         self.button1 = QtWidgets.QPushButton(self)
@@ -968,14 +1011,14 @@ class menu(QMainWindow, problem1):
         self.bp1.setText("Problem1")
         self.bp1.setFont(myFont)
         self.bp1.clicked.connect(self.button_clicked_bg1)
-        self.bp1.setFixedSize(100,30)
+        self.bp1.setFixedSize(100,50)
         self.bp1.move(240,170)
         
         self.bp2 = QtWidgets.QPushButton(self)
         self.bp2.setText("Problem2")
         self.bp2.setFont(myFont)
         self.bp2.clicked.connect(self.button_clicked_bp2)
-        self.bp2.setFixedSize(100,30)
+        self.bp2.setFixedSize(100,50)
         self.bp2.move(240,230)
         
         #Problem 2 ye basılırsa açılacak olanlar
