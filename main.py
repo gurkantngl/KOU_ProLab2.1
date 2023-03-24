@@ -318,52 +318,7 @@ class problem1():
                 cell = maze[y][x]
                 print("currPos[1]: ", curPos[1])
                 print("currPos[2]: ", curPos[2])
-                
-                """
-                if x == curPos[1] + 1:
-                    cellNeighbor = maze[y][x+1]
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    self.draw_rect(cellPadding + (x+1) * cellSize, self.HEADER + cellPadding + y * cellSize, cellSize - 1, color)
-                    #pygame.display.flip()
-                
-                elif x == curPos[1] - 1 and y == curPos[2]:
-                    cellNeighbor = maze[y][x-1]
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
                     
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                        
-                    self.draw_rect(cellPadding + (x-1) * cellSize, self.HEADER + cellPadding + y * cellSize, cellSize-1, color)
-                    #pygame.display.flip()
-                
-                elif y == curPos[2] + 1 and x == curPos[1]:
-                    cellNeighbor = maze[y+1][x]
-                    
-                    if cellNeighBor == 1:
-                        color self.BlackColor
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    self.draw_rect(cellPadding + x * cellSize, self.HEADER + cellPadding + (y+1) * cellSize, cellSize - 1, color)
-                    #pygame.display.flip()
-                    
-                elif y == curPos[2] - 1 and x == curPos[1]:
-                    cellNeighbor = maze[y-1][x]
-                    
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
-                    
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    
-                    self.draw_rect(cellPadding + x * cellSize, self.HEADER + cellPadding + (y-1) * cellSize, cellSize - 1, color)
-                    #pygame.display.flip()
-                    """
-                
-                
                 if cell == 2:
                     color = self.GreenColor
                     
