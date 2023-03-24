@@ -2,11 +2,12 @@ import urllib.request
 import threading
 import pygame
 import time
-from utils import stop_thread
 import sys
 from PyQt5 import QtWidgets, QtGui
 from random import randint, choice
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
+import ctypes
+import inspect
 
 # 0 -> Yol
 # 1 -> 1x1 Engel
@@ -1087,6 +1088,27 @@ class menu(QMainWindow, problem1):
         self.close()
         maze.init()
         maze.main()
+
+def _async_raise(tid, exctype):
+    """raises the exception, performs cleanup if needed"""
+    tid = ctypes.c_long(tid)
+    if not inspect.isclass(exctype):
+        exctype = type(exctype)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+    if res == 0:
+        raise ValueError("invalid thread id")
+    elif res != 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
+
+
+def stop_thread(thread):
+    _async_raise(thread.ident, SystemExit)
+
+
+
 
 app = QApplication(sys.argv)
 win = menu()
