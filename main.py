@@ -8,21 +8,23 @@ from random import randint, choice
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
 import ctypes
 import inspect
+import os
 
 # 0 -> Yol
 # 1 -> 1x1 Engel
 # 2 -> Gezilmiş Doğru Yol -> Yeşil
 # 3 -> Gezilmiş Yanlış Yol -> Kırmızı
 
-class problem1():
+class robot1():
     kareSayısı = 0
     enKısaYol = 0
     pygame.time.set_timer = 0
     refreshTime = pygame.time.get_ticks()
     FONT_SIZE = 25
     waitTime = 0.1
-    def init(self):
+    def __init__(self):
         pygame.init()
+        self.ızgara = ızgara1()
         self.cellSize = 40
         self.HEADER = 40
         self.cellPadding = 5
@@ -43,12 +45,13 @@ class problem1():
         self.YellowColor = (255, 255, 0)
         self.OrangeColor = (255, 100, 0)
         self.BrownColor = (75, 35, 15)
+        self.AquaColor = (0, 255, 255)
         
         self.buttonList = []
         self.SOLVE_THREAD = None
         
     def main(self):
-        self.Maze1, self.Entrance1, self.Exit1 = self.generate_maze1()
+        self.Maze1, self.Entrance1, self.Exit1 = self.ızgara.generate_maze1()
         
         print("Entrance1: ",self.Entrance1)
         print("Exit1: ",self.Exit1)
@@ -56,11 +59,13 @@ class problem1():
         self.currEntrance = self.Entrance1
         self.currExit = self.Exit1
         
-        self.Maze2, self.Entrance2, self.Exit2 = self.generate_maze2()
+        self.Maze2, self.Entrance2, self.Exit2 = self.ızgara.generate_maze2()
         for maze in self.Maze2:
             for i in range(len(maze)):
-                if maze[i] == 2 or maze[i] == 3:
-                    maze[i] = 1
+                if maze[i] == 2 :
+                    maze[i] = 5
+                elif maze[i] == 3:
+                    maze[i] = 6
             print(maze)
         print("Entrance2: ", self.Entrance2)
         print("Exit2:", self.Exit2)
@@ -82,7 +87,7 @@ class problem1():
                             #self.dispatcher_click(mouse_pos)
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
-                                problem1.refreshTime = pygame.time.get_ticks()
+                                robot1.refreshTime = pygame.time.get_ticks()
                         
         
         
@@ -130,10 +135,10 @@ class problem1():
                         #self.dispatcher_click(mouse_pos)
                         
                         if self.buttonList[0].collidepoint(mouse_pos):
-                            problem1.refreshTime = pygame.time.get_ticks()
-                            problem1.kareSayısı = 0
-                            problem1.enKısaYol = 0
-                            problem1.waitTime = 0.1
+                            robot1.refreshTime = pygame.time.get_ticks()
+                            robot1.kareSayısı = 0
+                            robot1.enKısaYol = 0
+                            robot1.waitTime = 0.1
                             self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
                             self.SOLVE_THREAD.start()
                             self.infoVisible = False
@@ -142,15 +147,16 @@ class problem1():
                             self.changeMaze()
                         
                         elif self.buttonList[2].collidepoint(mouse_pos):
-                            problem1.waitTime = 0
+                            robot1.waitTime = 0
     
                 
     def draw_rect(self, x, y, len, color):
-        pygame.draw.rect(self.SCREEN, color, [x, y, len, len], 0)           
+        pygame.draw.rect(self.SCREEN, color, [x, y, len, len], 0)
+
     
     def drawButton(self, x, y, len, height, text):
         
-        FONT = pygame.font.SysFont("MS Shell Dlg2", problem1.FONT_SIZE)
+        FONT = pygame.font.SysFont("MS Shell Dlg2", robot1.FONT_SIZE)
         button = pygame.draw.rect(self.SCREEN, self.WhiteColor, [x, y, len, height], 1)
         self.buttonList.append(button)
         text_surface = FONT.render(text, True, self.WhiteColor)
@@ -161,11 +167,11 @@ class problem1():
     
     
     def changeMaze(self):
-        problem1.refreshTime = pygame.time.get_ticks()
+        robot1.refreshTime = pygame.time.get_ticks()
         self.buttonList.clear()
-        problem1.waitTime = 0.1
-        problem1.kareSayısı = 0
-        problem1.enKısaYol = 0
+        robot1.waitTime = 0.1
+        robot1.kareSayısı = 0
+        robot1.enKısaYol = 0
         self.infoVisible = False
         pygame.time.set_timer = 0
         global Maze, Entrance, Exit, SOLVE_THREAD
@@ -199,9 +205,9 @@ class problem1():
             self.currEntrance = self.Entrance2
             self.currExit = self.Exit2
         if len(self.currMaze[0]) < 15:
-                problem1.FONT_SIZE = 20
+                robot1.FONT_SIZE = 20
         else:
-                problem1.FONT_SIZE = 25
+                robot1.FONT_SIZE = 25
              
         self.drawMazeEnd(self.currMaze)   
         run = True
@@ -214,7 +220,7 @@ class problem1():
                             #self.dispatcher_click(mouse_pos)
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
-                                problem1.refreshTime = pygame.time.get_ticks()
+                                robot1.refreshTime = pygame.time.get_ticks()
                             
                             elif self.buttonList[1].collidepoint(mouse_pos):
                                 self.changeMaze()
@@ -222,8 +228,172 @@ class problem1():
                                 
         self.SOLVE_THREAD = threading.Thread(target = self.solve_maze, args = (self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
         self.SOLVE_THREAD.start()
-        
     
+    
+    
+    def drawMazeStart(self, maze, curPos):
+        #self.SCREEN.fill(self.GrayColor)
+        self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
+            
+        self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
+        
+        self.drawButton(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
+            
+        #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+        
+        for y in range(len(maze)):
+            for x in range(len(maze)):
+                cell = maze[y][x]
+                print("currPos[1]: ", curPos[1])
+                print("currPos[2]: ", curPos[2])
+                    
+                if maze[y][x] == 2:
+                    color = self.GreenColor
+                    
+                elif maze[y][x] == 3:
+                    color = self.RedColor
+                
+                #1
+                elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                #2    
+                elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                #3    
+                elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                #4
+                elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                
+                else:
+                    color = self.GrayColor
+                
+                
+                if x == curPos[1] and y == curPos[2]:
+                    color = self.BlueColor
+                    
+                if x == self.currEntrance[0] and y == self.currEntrance[1]:
+                    color = self.YellowColor
+                    
+                    
+                self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
+            pygame.display.flip()
+  
+            
+                 
+    def drawMazeEnd(self, maze):
+        print(maze)
+        #self.SCREEN.fill(self.GrayColor) 
+        self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
+        
+        self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
+        
+        self.drawButton(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
+            
+        #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
+        
+        size = len(maze)
+        for y in range(size):
+            for x in range(size):
+                cell = maze[y][x]
+                if maze[y][x] == 1:
+                    color = self.BlackColor
+                    
+                elif maze[y][x] == 5:
+                    color = self.OrangeColor
+                
+                elif maze[y][x] == 6:
+                    color = self.AquaColor
+                    
+                elif maze[y][x] == 2:
+                    robot1.kareSayısı += 1
+                    robot1.enKısaYol += 1
+                    color = self.GreenColor
+                    
+                elif maze[y][x] == 3:
+                    robot1.kareSayısı += 1
+                    color = self.RedColor
+                else:
+                    color = self.WhiteColor
+                self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize - 1, color)
+        pygame.display.flip()        
+    
+    
+    def solve_maze(self, maze, pos, end, callback):
+        time.sleep(robot1.waitTime)
+        
+        # Çıkışa ulaşmak
+        if pos[0] == end[0] and pos[1] == end[1]:
+            maze[pos[1]][pos[0]] = 2
+            return True
+        # 4 bitişik pozisyon al
+        x, y = pos
+        t = self.ızgara.valid(maze, x, y-1)
+        r = self.ızgara.valid(maze, x+1, y)
+        d = self.ızgara.valid(maze, x, y+1)
+        l = self.ızgara.valid(maze, x-1, y)
+    
+        nextPos = self.ızgara.suggestPos((t, r, d, l))
+
+        if nextPos:
+            print("nextPos: ",nextPos)
+            if nextPos[0] == 2:
+                maze[pos[1]][pos[0]] = 3
+            
+            else:
+                maze[pos[1]][pos[0]] = 2
+            
+            callback(maze, nextPos)
+            return self.solve_maze(maze, (nextPos[1], nextPos[2]), end, callback)
+        else:
+            print("nextPos: ", nextPos)
+            maze[pos[1]][pos[0]] = 3
+            callback(maze, nextPos)
+            return False
+         
+      
+class ızgara1():
     
     def generate_maze1(self):
         url = "http://bilgisayar.kocaeli.edu.tr/prolab2/url1.txt"
@@ -255,8 +425,10 @@ class problem1():
                         break
         for Maze in maze:
             for i in range (len(Maze)):
-                if Maze[i] == 2 or Maze[i] == 3:
-                    Maze[i] = 1
+                if Maze[i] == 2 :
+                    Maze[i] = 5
+                elif Maze[i] == 3:
+                    Maze[i] = 6
             print(Maze)
         return maze, Entrance, Exit
            
@@ -302,108 +474,6 @@ class problem1():
     
     
     
-    def drawMazeStart(self, maze, curPos):
-        #self.SCREEN.fill(self.GrayColor)
-        self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
-            
-        self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
-        
-        self.drawButton(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
-            
-        #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
-        
-        for y in range(len(maze)):
-            for x in range(len(maze)):
-                
-                cell = maze[y][x]
-                print("currPos[1]: ", curPos[1])
-                print("currPos[2]: ", curPos[2])
-                    
-                if cell == 2:
-                    color = self.GreenColor
-                    
-                elif cell == 3:
-                    color = self.RedColor
-                
-                else:
-                    color = self.GrayColor
-                    
-                if x == curPos[1] and y == curPos[2]:
-                    color = self.BlueColor
-                    
-                if x == self.currEntrance[0] and y == self.currEntrance[1]:
-                    color = self.YellowColor
-                    
-                    
-                self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
-            pygame.display.flip()
-  
-            
-                 
-    def drawMazeEnd(self, maze):
-        print(maze)
-        #self.SCREEN.fill(self.GrayColor) 
-        self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
-        
-        self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
-        
-        self.drawButton(2 + ((self.WIDTH - 4)/3) * 2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Son')
-            
-        #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
-        
-        size = len(maze)
-        for y in range(size):
-            for x in range(size):
-                cell = maze[y][x]
-                if cell == 1:
-                    color = self.BlackColor
-                    
-                elif cell == 2:
-                    problem1.kareSayısı += 1
-                    problem1.enKısaYol += 1
-                    color = self.GreenColor
-                    
-                elif cell == 3:
-                    problem1.kareSayısı += 1
-                    color = self.RedColor
-                else:
-                    color = self.WhiteColor
-                self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize - 1, color)
-        pygame.display.flip()        
-    
-    
-    def solve_maze(self, maze, pos, end, callback):
-        time.sleep(problem1.waitTime)
-        
-        # Çıkışa ulaşmak
-        if pos[0] == end[0] and pos[1] == end[1]:
-            maze[pos[1]][pos[0]] = 2
-            return True
-        # 4 bitişik pozisyon al
-        x, y = pos
-        t = self.valid(maze, x, y-1)
-        r = self.valid(maze, x+1, y)
-        d = self.valid(maze, x, y+1)
-        l = self.valid(maze, x-1, y)
-    
-        nextPos = self.suggestPos((t, r, d, l))
-
-        if nextPos:
-            print("nextPos: ",nextPos)
-            if nextPos[0] == 2:
-                maze[pos[1]][pos[0]] = 3
-            
-            else:
-                maze[pos[1]][pos[0]] = 2
-            
-            callback(maze, nextPos)
-            return self.solve_maze(maze, (nextPos[1], nextPos[2]), end, callback)
-        else:
-            print("nextPos: ", nextPos)
-            maze[pos[1]][pos[0]] = 3
-            callback(maze, nextPos)
-            return False
-         
     def valid(self, maze, x, y):
         if x < 0 or y < 0:
             return False
@@ -418,6 +488,8 @@ class problem1():
         
         return val, x, y
     
+    
+    
     def suggestPos(self, cells):
         
         cellArr = []
@@ -429,15 +501,15 @@ class problem1():
                 else:
                     cellArr.append(3)
         return cells[cellArr.index(min(cellArr))]
-      
-      
 
-class problem2():
+
+
+class robot2():
     kareSayısı = 0
     enKısaYol = 0
     refreshTime = pygame.time.get_ticks()
     waitTime = 0.1
-    def init(self):
+    def __init__(self):
         pygame.init()
         self.cell_size = 40
         self.HEADER = 40
@@ -451,7 +523,6 @@ class problem2():
         self.CLOCK = pygame.time.Clock()
         self.startTime = pygame.time.get_ticks()
         self.buttonList = []
-        
         #Colors
         self.WhiteColor = (255, 255, 255)
         self.BlackColor = (0, 0, 0)
@@ -461,10 +532,11 @@ class problem2():
         self.GrayColor = (45, 45, 45)
         self.BUTTONS = []
         self.SOLVE_THREAD = None
-
+        self.ızgara = ızgara2(self.WIDTH, self.HEIGHT)
+        
     def main(self):
         
-        self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)        
+        self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze(menu.satır, menu.sutun)        
         self.draw_mazeEnd(self.MAZE)
         
         run = True
@@ -477,10 +549,10 @@ class problem2():
                             #self.dispatcher_click(mouse_pos)
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
-                                problem2.refreshTime = pygame.time.get_ticks()
+                                robot2.refreshTime = pygame.time.get_ticks()
                             
                             elif self.buttonList[1].collidepoint(mouse_pos):
-                                self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)
+                                self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze(menu.satır, menu.sutun)
                                 self.draw_mazeEnd(self.MAZE)
         
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
@@ -527,10 +599,10 @@ class problem2():
                     #self.dispatcher_click(mouse_pos)
                     
                     if self.buttonList[0].collidepoint(mouse_pos):
-                            problem2.refreshTime = pygame.time.get_ticks()
-                            problem2.kareSayısı = 0
-                            problem2.enKısaYol = 0
-                            problem2.waitTime = 0.1
+                            robot2.refreshTime = pygame.time.get_ticks()
+                            robot2.kareSayısı = 0
+                            robot2.enKısaYol = 0
+                            robot2.waitTime = 0.1
                             self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
                             self.SOLVE_THREAD.start()
                             self.infoVisible = False
@@ -540,7 +612,7 @@ class problem2():
                         
                         
                     elif self.buttonList[2].collidepoint(mouse_pos):
-                        problem2.waitTime = 0
+                        robot2.waitTime = 0
             
         
     def draw_rect(self, x, y, len, color):
@@ -558,17 +630,17 @@ class problem2():
 
 
     def refresh(self):
-        problem2.refreshTime = pygame.time.get_ticks()
+        robot2.refreshTime = pygame.time.get_ticks()
         pygame.time.set_timer = 0
-        problem2.waitTime = 0.1
-        problem2.kareSayısı = 0
-        problem2.enKısaYol = 0
+        robot2.waitTime = 0.1
+        robot2.kareSayısı = 0
+        robot2.enKısaYol = 0
         self.infoVisible = False
         pygame.time.set_timer = 0
         if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
             stop_thread(self.SOLVE_THREAD)
             self.SOLVE_THREAD = None
-        self.MAZE, self.ENTRANCE, self.EXIT = generate_maze(menu.satır, menu.sutun)
+        self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze(menu.satır, menu.sutun)
         
         self.draw_mazeEnd(self.MAZE)
         run = True
@@ -581,7 +653,7 @@ class problem2():
                             #self.dispatcher_click(mouse_pos)
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
-                                problem2.refreshTime = pygame.time.get_ticks()
+                                robot2.refreshTime = pygame.time.get_ticks()
                                 
                             elif self.buttonList[1].collidepoint(mouse_pos):
                                 self.refresh()
@@ -647,7 +719,61 @@ class problem2():
                 
                 elif cell == 3:
                     color = self.RedColor
+
+                
+                #1
+                elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 0:
+                    color = self.WhiteColor
                     
+                elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                #2    
+                elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                #3    
+                elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                #4
+                elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 0:
+                    color = self.WhiteColor
+                    
+                elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 1:
+                    color = self.BlackColor
+                
+                elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 5:
+                    color = self.OrangeColor
+                    
+                elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 6:
+                    color = self.AquaColor
+                
+                
                 else:
                     color = self.GrayColor
                     
@@ -674,13 +800,16 @@ class problem2():
                 
                 if cell==1:
                     color = self.BlackColor
+                    
                 elif cell == 2:
-                    problem2.kareSayısı += 1
-                    problem2.enKısaYol += 1
+                    robot2.kareSayısı += 1
+                    robot2.enKısaYol += 1
                     color = self.GreenColor
+                    
                 elif cell == 3:
-                    problem2.kareSayısı += 1
+                    robot2.kareSayısı += 1
                     color = self.RedColor
+                    
                 else:
                     color = self.WhiteColor
                 self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
@@ -716,7 +845,7 @@ class problem2():
 
 
     def solve_maze(self, maze, pos, end, callback):
-        time.sleep(problem2.waitTime)
+        time.sleep(robot2.waitTime)
         # Çıkışa Ulaşmak
         if pos[0] == end[0] and pos[1] == end[1]:
             maze[pos[1]][pos[0]] = 2
@@ -744,41 +873,6 @@ class problem2():
             maze[pos[1]][pos[0]] = 3
             callback(maze, next_pos)
             return False
-
-
-      
-class Maze:
-    
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.maze = []
-        for i in range (height):
-            self.maze.append([])
-            for j in range(width):
-                self.maze[i].append(0)
-        print("Maze: ",self.maze)
-        
-
-    def reset_maze(self, cellType):
-        for y in range(self.height):
-            for x in range(self.width):
-                self.set_maze(x, y, cellType)
-
-
-    def set_maze(self, x, y, value):
-        if value == 0:
-            self.maze[y][x] = 0
-        else:
-            self.maze[y][x] = 1
-
-
-    def visited(self, x, y):
-        return self.maze[y][x] != 1
-
-
-
-
 
 
 def check_neighbors(maze, x, y, width, height, checklist):
@@ -824,55 +918,105 @@ def check_neighbors(maze, x, y, width, height, checklist):
         return True
     return False
 
-def do_random_prime(maze):
-    maze.reset_maze(1)
-    width = (maze.width - 1) // 2
-    height = (maze.height - 1) // 2
-    start_x, start_y = (randint(0, width - 1), randint(0, height - 1))
-    print("Start X: ",start_x)
-    print("Start Y: ",start_y)
-    maze.set_maze(2 * start_x + 1, 2 * start_y + 1, 1)
-    checklist = [(start_x, start_y)]
-    print("Checklist: ",checklist)
-    while len(checklist):
-        entry = choice(checklist)
-        print(entry)
-        if not check_neighbors(maze, entry[0], entry[1], width, height, checklist):
-            checklist.remove(entry)
-
-def girişÇıkışAyarla(maze):
-    başlangıç = []
-    for i in range(maze.height):
-        if maze.maze[i][1] == 0:
-            maze.set_maze(0, i, 0)
-            başlangıç = [0, i]
-            print("Giriş: ",başlangıç)
-            break
-    çıkış = []
-    for i in range(maze.height - 1, 0, -1):
-        if maze.maze[i][maze.width - 2] == 0:
-            maze.set_maze(maze.width - 1, i, 0)
-            çıkış = [maze.width - 1, i]
-            break
-    return başlangıç, çıkış
 
 
-def generate_maze(height, width):
-    # labirenti başlat
-    maze = Maze(width, height)
-    print("maze: ",maze)
+class ızgara2():
     
-    # Harita oluştur
-    do_random_prime(maze)
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.maze = []
+        for i in range (height):
+            self.maze.append([])
+            for j in range(width):
+                self.maze[i].append(0)
+        print("Maze: ",self.maze)
+        
     
-    # Başlangıç ve bitişi seçin
-    başlangıç, çıkış = girişÇıkışAyarla(maze)
+    def reset_maze(self, cellType):
+        for y in range(self.height):
+            for x in range(self.width):
+                self.set_maze(x, y, cellType)
+
+
+    def set_maze(self, x, y, value):
+        if value == 0:
+            self.maze[y][x] = 0
+        else:
+            self.maze[y][x] = 1
+
+
+    def visited(self, x, y):
+        return self.maze[y][x] != 1
+        
     
-    # Haritaya Dön
-    return maze.maze, başlangıç, çıkış
+    
+    def do_random_prime(self, maze):
+        maze.reset_maze(1)
+        width = (maze.width - 1) // 2
+        height = (maze.height - 1) // 2
+        start_x, start_y = (randint(0, width - 1), randint(0, height - 1))
+        print("Start X: ",start_x)
+        print("Start Y: ",start_y)
+        maze.set_maze(2 * start_x + 1, 2 * start_y + 1, 1)
+        checklist = [(start_x, start_y)]
+        print("Checklist: ",checklist)
+        while len(checklist):
+            entry = choice(checklist)
+            print(entry)
+            if not check_neighbors(maze, entry[0], entry[1], width, height, checklist):
+                checklist.remove(entry)
+
+
+    def girişÇıkışAyarla(self, maze):
+        başlangıç = []
+        for i in range(maze.height):
+            if maze.maze[i][1] == 0:
+                maze.set_maze(0, i, 0)
+                başlangıç = [0, i]
+                print("Giriş: ",başlangıç)
+                break
+        çıkış = []
+        for i in range(maze.height - 1, 0, -1):
+            if maze.maze[i][maze.width - 2] == 0:
+                maze.set_maze(maze.width - 1, i, 0)
+                çıkış = [maze.width - 1, i]
+                break
+        return başlangıç, çıkış
+
+
+    def generate_maze(self, height, width):
+        # labirenti başlat
+        maze = ızgara2(width, height)
+        print("maze: ",maze)
+        
+        # Harita oluştur
+        self.do_random_prime(maze)
+        
+        # Başlangıç ve bitişi seçin
+        başlangıç, çıkış = self.girişÇıkışAyarla(maze)
+        
+        # Haritaya Dön
+        return maze.maze, başlangıç, çıkış
+
+
+
 
       
-      
+class Engel():
+    def __init__(self, type):
+        self.BlackColor = (0, 0, 0)
+        self.OrangeColor = (255, 100, 0)
+        self.AquaColor = (0, 255, 255)
+        
+        if self.type == 1:
+            self.Color = self.BlackColor
+
+        elif self.type == 2:
+            self.Color = self.OrangeColor
+            
+        elif self.type == 3:
+            self.Color = self.AquaColor
       
       
         
@@ -912,16 +1056,16 @@ class uygulama(QMainWindow):
         self.label4.move(125, 160)
         self.label4.setFont(myFont)
         
-        if problem1.kareSayısı == 0:
-            self.label3.setText("Gezilen Kare Sayısı: " +  str(problem2.kareSayısı))
-            self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem2.refreshTime)/1000.0),2)) + " sn")
-            self.label4.setText("En Kısa Yol: " + str(problem2.enKısaYol))
-            problem2.refreshTime = pygame.time.get_ticks()
+        if robot1.kareSayısı == 0:
+            self.label3.setText("Gezilen Kare Sayısı: " +  str(robot2.kareSayısı))
+            self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - robot2.refreshTime)/1000.0),2)) + " sn")
+            self.label4.setText("En Kısa Yol: " + str(robot2.enKısaYol))
+            robot2.refreshTime = pygame.time.get_ticks()
         else:
-            self.label3.setText("Gezilen Kare Sayısı: " +  str(problem1.kareSayısı))
-            self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - problem1.refreshTime)/1000.0),2)) + " sn")
-            self.label4.setText("En Kısa Yol: "+ str(problem1.enKısaYol))
-            problem1.refreshTime = pygame.time.get_ticks()
+            self.label3.setText("Gezilen Kare Sayısı: " +  str(robot1.kareSayısı))
+            self.label2.setText("Toplam Süre: " + str(round(((pygame.time.get_ticks() - robot1.refreshTime)/1000.0),2)) + " sn")
+            self.label4.setText("En Kısa Yol: "+ str(robot1.enKısaYol))
+            robot1.refreshTime = pygame.time.get_ticks()
         
         
         myFont.setPointSize(10)
@@ -936,7 +1080,7 @@ class uygulama(QMainWindow):
         self.setVisible(False)
 
 
-class menu(QMainWindow, problem1):
+class menu(QMainWindow, robot1):
     def __init__(self):
         super(menu,self).__init__()
         self.initUI()
@@ -1032,16 +1176,14 @@ class menu(QMainWindow, problem1):
         
     def button_clicked_bg1(self):
         self.setVisible(False)
-        maze = problem1()
-        maze.init()
+        maze = robot1()
         maze.main()
         
     def button_clicked_bg2(self):
         menu.satır = int(self.textbox1.text())
         menu.sutun = int(self.textbox2.text())
-        maze = problem2()
+        maze = robot2()
         self.close()
-        maze.init()
         maze.main()
 
 def _async_raise(tid, exctype):
