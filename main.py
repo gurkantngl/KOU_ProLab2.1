@@ -983,31 +983,49 @@ class ızgara2():
             for j in range(width):
                 self.maze[i].append(0)
         
-    
+    # labirenti verilen sayı tipine dönüştürür
     def reset_maze(self, cellType):
         for y in range(self.height):
             for x in range(self.width):
                 self.set_maze(x, y, cellType)
 
-
+    # eğer value 0 ise yol olarak belirlenir, eğer değilse 1 - duvar olarak belirlenir
     def set_maze(self, x, y, value):
         if value == 0:
-            self.maze[y][x] = 0
+            self.maze[y][x] = value
             
         else:
             self.maze[y][x] = 1
 
 
+    # kare 1 e eşit değilse True döndürür
     def visited(self, x, y):
         return self.maze[y][x] != 1
         
     
+    # Prim algoritması
+        """
+        Metod, "maze" adında bir labirent nesnesi alır. 
+        İlk olarak, labirentin tüm hücrelerini 1 ile sıfırlar 
+        ve "width" ve "height" adında iki değişkene labirentin genişliği ve yüksekliğinin yarısını atar. 
+        Daha sonra, labirentin içindeki bir rastgele hücreyi "start_x" ve "start_y" adlı değişkenlere atar ve bu hücreyi ziyaret edilmiş olarak işaretler.
+
+        Döngü, "checklist" adlı bir liste içindeki hücrelerin tamamı ziyaret edilene kadar devam eder. 
+        Her döngüde, "checklist" içindeki rastgele bir hücre seçilir ve "check_neighbors" adlı bir yardımcı fonksiyon ile kontrol edilir. 
+        Bu fonksiyon, seçilen hücrenin komşuları arasında ziyaret edilmemiş hücrelerin var olup olmadığını kontrol eder ve varsa bu hücreleri "checklist" listesine ekler. 
+        Eğer seçilen hücrenin komşuları arasında ziyaret edilmemiş hücre yoksa, o hücre "checklist" listesinden çıkarılır.
+
+        Bu işlem, labirentte tüm hücreler ziyaret edilene kadar devam eder ve sonuçta labirent, Prim algoritması ile rastgele şekilde oluşturulur.
+        """
     
     def do_random_prime(self, maze):
         maze.reset_maze(1)
         width = (maze.width - 1) // 2
+        print("width: ",width)
         height = (maze.height - 1) // 2
+        print("height: ",height)
         start_x, start_y = (randint(0, width - 1), randint(0, height - 1))
+        print("startx, starty: ",start_x,start_y)
         maze.set_maze(2 * start_x + 1, 2 * start_y + 1, 1)
         checklist = [(start_x, start_y)]
         
@@ -1039,6 +1057,8 @@ class ızgara2():
     def generate_maze(self, height, width):
         # labirenti başlat
         maze = ızgara2(width, height)
+        # ızgara nesnesi oluşturulur
+        #verilen satır ve sütun sayısı kadar 0 olan dizi oluşturulur
         
         # Harita oluştur
         self.do_random_prime(maze)
@@ -1048,7 +1068,18 @@ class ızgara2():
         
         # Haritaya Dön
         return maze.maze, başlangıç, çıkış
+    """
+    Bu Python fonksiyonu, "do_random_prime" metodunda kullanılan "check_neighbors" adlı yardımcı bir fonksiyondur.
 
+    Fonksiyon, "maze" adlı labirent nesnesi, bir konum (x, y), labirentin genişliği ve yüksekliğinin yarısı (width ve height) ve "checklist" adlı bir liste alır. 
+    Fonksiyon, belirtilen konumdaki hücrenin komşularını kontrol eder ve ziyaret edilmemiş olanlar arasında rastgele bir yöne ilerler. 
+    Bu yönde, aradaki duvarları yıkar ve komşu hücreyi "checklist" listesine ekler.
+    Fonksiyon, önce "directions" adlı bir boş liste oluşturur. 
+    Daha sonra, belirtilen konumun sol, üst, sağ ve alt komşularının ziyaret edilip edilmediğini kontrol eder ve ziyaret edilmemiş olanları "directions" listesine ekler. 
+    Eğer "directions" listesi boş değilse, bir yön rastgele seçilir ve ilgili komşu hücreye gidilir. Yönde, aradaki duvarlar yıkılır ve komşu hücre "checklist" listesine eklenir. 
+    Fonksiyon, işlemi başarılı bir şekilde gerçekleştirdiğinde True değeri döndürür, aksi halde False değeri döndürür.
+    Bu fonksiyon, labirentin oluşturulmasında önemli bir rol oynar ve her bir hücrenin komşularını kontrol ederek labirentin rastgele şekilde oluşmasını sağlar.
+    """
 def check_neighbors(maze, x, y, width, height, checklist):
     directions = []
     if x > 0:
@@ -1103,13 +1134,13 @@ class Engel():
         self.AquaColor = (0, 255, 255)
         
         if type == 1:
-            self.image = "engel1.jpg"
+            self.image = "Engel1.jpg"
 
         elif type == 2:
-            self.image = "engel2.jpg"
+            self.image = "Engel2.jpg"
             
         elif type == 3:
-            self.image = "engel3.jpg"
+            self.image = "Engel3.jpg"
       
       
         
@@ -1280,7 +1311,6 @@ class menu(QMainWindow, robot1):
         maze.main()
 
 def _async_raise(tid, exctype):
-    """raises the exception, performs cleanup if needed"""
     tid = ctypes.c_long(tid)
     if not inspect.isclass(exctype):
         exctype = type(exctype)
