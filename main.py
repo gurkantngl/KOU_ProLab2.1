@@ -53,16 +53,12 @@ class robot1():
     def main(self):
         self.Maze1, self.Entrance1, self.Exit1 = self.ızgara.generate_maze1()
         
-        print("Entrance1: ",self.Entrance1)
-        print("Exit1: ",self.Exit1)
         self.currMaze = self.Maze1
         self.currEntrance = self.Entrance1
         self.currExit = self.Exit1
         
         self.Maze2, self.Entrance2, self.Exit2 = self.ızgara.generate_maze2()
-        
-        print("Entrance2: ", self.Entrance2)
-        print("Exit2:", self.Exit2)
+
         
         self.WIDTH = (self.cellSize * len(self.Maze1[0])) + (2 * self.cellPadding)
         self.HEIGHT = self.WIDTH + self.HEADER
@@ -159,13 +155,11 @@ class robot1():
 
     
     def drawButton(self, x, y, len, height, text):
-        
         FONT = pygame.font.SysFont("MS Shell Dlg2", robot1.FONT_SIZE)
         button = pygame.draw.rect(self.SCREEN, self.WhiteColor, [x, y, len, height], 1)
         self.buttonList.append(button)
         text_surface = FONT.render(text, True, self.WhiteColor)
         text_len = text.__len__() * 7
-        print(text_len)
         self.SCREEN.blit(text_surface, (x + (len - text_len) / 2, y + 6))
     
     
@@ -254,10 +248,8 @@ class robot1():
         
         for y in range(len(maze)): 
             for x in range(len(maze)):
-                cell = maze[y][x]
-                print("currPos[1]: ", curPos[1])
-                print("currPos[2]: ", curPos[2])
-                    
+                engelLocation = (self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize
+                engelSize = self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)
                 if maze[y][x] == 2:
                     color = self.GreenColor
                     self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
@@ -273,20 +265,20 @@ class robot1():
                     
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 #2    
@@ -296,20 +288,20 @@ class robot1():
                     
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 #3    
@@ -319,20 +311,20 @@ class robot1():
                     
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 #4
@@ -342,20 +334,20 @@ class robot1():
                     
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 else:
@@ -375,7 +367,6 @@ class robot1():
             
                  
     def drawMazeEnd(self, maze):
-        print(maze)
         #self.SCREEN.fill(self.GrayColor) 
         self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
         
@@ -388,22 +379,23 @@ class robot1():
         size = len(maze)
         for y in range(size):
             for x in range(size):
-                cell = maze[y][x]
+                engelLocation = (self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize
+                engelSize = self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)
                 if maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     
                 elif maze[y][x] == 5:
                     color = self.OrangeColor
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     
                 elif maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     
                 elif maze[y][x] == 2:
                     robot1.kareSayısı += 1
@@ -440,7 +432,6 @@ class robot1():
         nextPos = self.ızgara.suggestPos((t, r, d, l))
 
         if nextPos:
-            print("nextPos: ",nextPos)
             if nextPos[0] == 2:
                 maze[pos[1]][pos[0]] = 3
             
@@ -450,7 +441,6 @@ class robot1():
             callback(maze, nextPos)
             return self.solve_maze(maze, (nextPos[1], nextPos[2]), end, callback)
         else:
-            print("nextPos: ", nextPos)
             maze[pos[1]][pos[0]] = 3
             callback(maze, nextPos)
             return False
@@ -495,7 +485,6 @@ class ızgara1():
                     Maze[i] = 5
                 elif Maze[i] == 3:
                     Maze[i] = 6
-            print(Maze)
             
         return maze, Entrance, Exit
            
@@ -625,6 +614,7 @@ class robot2():
                             
                             elif self.buttonList[1].collidepoint(mouse_pos):
                                 self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze(menu.satır, menu.sutun)
+                                self.SCREEN.fill(self.BlackColor)
                                 self.draw_mazeEnd(self.MAZE)
         self.SCREEN.fill(self.BlackColor)
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
@@ -754,8 +744,8 @@ class robot2():
         for y in range(size):
             for x in range(size):
                 cell = maze[y][x]
-                print("curr_pos[1]: ",cur_pos[1])
-                print("curr_pos[2]: ",cur_pos[2])
+                engelLocation = (self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size
+                engelSize = self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)
                 if cell == 2:
                     color = self.GreenColor
                     self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
@@ -771,20 +761,20 @@ class robot2():
                     
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 #2    
@@ -794,20 +784,20 @@ class robot2():
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 #3    
@@ -817,20 +807,20 @@ class robot2():
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 #4
@@ -840,20 +830,20 @@ class robot2():
                     
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 else:
@@ -880,23 +870,24 @@ class robot2():
         for y in range(size):
             for x in range(size):
                 cell = maze[y][x]
-                
+                engelLocation = (self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size
+                engelSize = self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)
                 if cell == 1:
                     image = pygame.image.load("Engel1.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                 
                 elif cell == 5:
                     image = pygame.image.load("Engel2.jpg")
-                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
-                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif cell == 6:
                     image = pygame.image.load("Engel3.jpg")
-                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
-                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    image = pygame.transform.scale(image, engelSize)
+                    self.SCREEN.blit(image, engelLocation)
                     pygame.display.flip()
                     
                 elif cell == 2:
@@ -941,7 +932,6 @@ class robot2():
     def suggest_pos(self, cells):
         arr = []
         for cell in cells:
-            print("cell: ",cell)
             if cell:
                 arr.append(cell[0])
                 
@@ -962,15 +952,10 @@ class robot2():
         # 4 bitişik pozisyon al
         t, r, d, l = self.neighbors(maze, pos)
         
-        print("t: ",t)
-        print("r: ",r)
-        print("d: ",d)
-        print("l: ",l)
         
         next_pos = self.suggest_pos((t, r, d, l))
         
         if next_pos:
-            print("nextPos: ",next_pos)
             if next_pos[0] == 2:
                 maze[pos[1]][pos[0]] = 3
                 
@@ -981,60 +966,10 @@ class robot2():
             return self.solve_maze(maze, (next_pos[1], next_pos[2]), end, callback)
         
         else:
-            print("next_pos: ",next_pos)
             maze[pos[1]][pos[0]] = 3
             callback(maze, next_pos)
             
             return False
-
-
-def check_neighbors(maze, x, y, width, height, checklist):
-    directions = []
-    if x > 0:
-        if not maze.visited(2 * (x - 1) + 1, 2 * y + 1):
-            directions.append("LEFT")
-            
-    if y > 0:
-        if not maze.visited(2 * x + 1, 2 * (y - 1) + 1):
-            directions.append("UP")
-            
-    if x < width - 1:
-        if not maze.visited(2 * (x + 1) + 1, 2 * y + 1):
-            directions.append("RIGHT")
-            
-    if y < height - 1:
-        if not maze.visited(2 * x + 1, 2 * (y + 1) + 1):
-            directions.append("DOWN")
-            
-    print("Directions: ",directions)        
-    if len(directions) != 0:
-        direction = choice(directions)
-        print(direction)
-        
-        if direction == "LEFT":
-            maze.set_maze(2 * (x - 1) + 1, 2 * y + 1, 0)
-            maze.set_maze(2 * x, 2 * y + 1, 0)
-            checklist.append((x - 1, y))
-            
-        elif direction == "UP":
-            maze.set_maze(2 * x + 1, 2 * (y - 1) + 1, 0)
-            maze.set_maze(2 * x + 1, 2 * y, 0)
-            checklist.append((x, y - 1))
-            
-        elif direction == "RIGHT":
-            maze.set_maze(2 * (x + 1) + 1, 2 * y + 1, 0)
-            maze.set_maze(2 * x + 2, 2 * y + 1, 0)
-            checklist.append((x + 1, y))
-            
-        elif direction == "DOWN":
-            maze.set_maze(2 * x + 1, 2 * (y + 1) + 1, 0)
-            maze.set_maze(2 * x + 1, 2 * y + 2, 0)
-            checklist.append((x, y + 1))
-            
-        return True
-    
-    return False
-
 
 
 class ızgara2():
@@ -1047,7 +982,6 @@ class ızgara2():
             self.maze.append([])
             for j in range(width):
                 self.maze[i].append(0)
-        print("Maze: ",self.maze)
         
     
     def reset_maze(self, cellType):
@@ -1074,15 +1008,11 @@ class ızgara2():
         width = (maze.width - 1) // 2
         height = (maze.height - 1) // 2
         start_x, start_y = (randint(0, width - 1), randint(0, height - 1))
-        print("Start X: ",start_x)
-        print("Start Y: ",start_y)
         maze.set_maze(2 * start_x + 1, 2 * start_y + 1, 1)
         checklist = [(start_x, start_y)]
-        print("Checklist: ",checklist)
         
         while len(checklist):
             entry = choice(checklist)
-            print(entry)
             
             if not check_neighbors(maze, entry[0], entry[1], width, height, checklist):
                 checklist.remove(entry)
@@ -1094,7 +1024,6 @@ class ızgara2():
             if maze.maze[i][1] == 0:
                 maze.set_maze(0, i, 0)
                 başlangıç = [0, i]
-                print("Giriş: ",başlangıç)
                 break
         çıkış = []
         
@@ -1110,7 +1039,6 @@ class ızgara2():
     def generate_maze(self, height, width):
         # labirenti başlat
         maze = ızgara2(width, height)
-        print("maze: ",maze)
         
         # Harita oluştur
         self.do_random_prime(maze)
@@ -1121,7 +1049,50 @@ class ızgara2():
         # Haritaya Dön
         return maze.maze, başlangıç, çıkış
 
-
+def check_neighbors(maze, x, y, width, height, checklist):
+    directions = []
+    if x > 0:
+        if not maze.visited(2 * (x - 1) + 1, 2 * y + 1):
+            directions.append("LEFT")
+            
+    if y > 0:
+        if not maze.visited(2 * x + 1, 2 * (y - 1) + 1):
+            directions.append("UP")
+            
+    if x < width - 1:
+        if not maze.visited(2 * (x + 1) + 1, 2 * y + 1):
+            directions.append("RIGHT")
+            
+    if y < height - 1:
+        if not maze.visited(2 * x + 1, 2 * (y + 1) + 1):
+            directions.append("DOWN")
+            
+    if len(directions) != 0:
+        direction = choice(directions)
+        
+        if direction == "LEFT":
+            maze.set_maze(2 * (x - 1) + 1, 2 * y + 1, 0)
+            maze.set_maze(2 * x, 2 * y + 1, 0)
+            checklist.append((x - 1, y))
+            
+        elif direction == "UP":
+            maze.set_maze(2 * x + 1, 2 * (y - 1) + 1, 0)
+            maze.set_maze(2 * x + 1, 2 * y, 0)
+            checklist.append((x, y - 1))
+            
+        elif direction == "RIGHT":
+            maze.set_maze(2 * (x + 1) + 1, 2 * y + 1, 0)
+            maze.set_maze(2 * x + 2, 2 * y + 1, 0)
+            checklist.append((x + 1, y))
+            
+        elif direction == "DOWN":
+            maze.set_maze(2 * x + 1, 2 * (y + 1) + 1, 0)
+            maze.set_maze(2 * x + 1, 2 * y + 2, 0)
+            checklist.append((x, y + 1))
+            
+        return True
+    
+    return False
 
 
       
@@ -1131,14 +1102,14 @@ class Engel():
         self.OrangeColor = (255, 100, 0)
         self.AquaColor = (0, 255, 255)
         
-        if self.type == 1:
-            self.Color = self.BlackColor
+        if type == 1:
+            self.image = "engel1.jpg"
 
-        elif self.type == 2:
-            self.Color = self.OrangeColor
+        elif type == 2:
+            self.image = "engel2.jpg"
             
-        elif self.type == 3:
-            self.Color = self.AquaColor
+        elif type == 3:
+            self.image = "engel3.jpg"
       
       
         
