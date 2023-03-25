@@ -60,18 +60,11 @@ class robot1():
         self.currExit = self.Exit1
         
         self.Maze2, self.Entrance2, self.Exit2 = self.ızgara.generate_maze2()
-        for maze in self.Maze2:
-            for i in range(len(maze)):
-                if maze[i] == 2 :
-                    maze[i] = 5
-                elif maze[i] == 3:
-                    maze[i] = 6
-            print(maze)
+        
         print("Entrance2: ", self.Entrance2)
         print("Exit2:", self.Exit2)
         
         self.WIDTH = (self.cellSize * len(self.Maze1[0])) + (2 * self.cellPadding)
-        
         self.HEIGHT = self.WIDTH + self.HEADER
         self.WINDOW = (self.WIDTH, self.HEIGHT)
         self.SCREEN = pygame.display.set_mode(self.WINDOW)
@@ -88,8 +81,15 @@ class robot1():
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
                                 robot1.refreshTime = pygame.time.get_ticks()
-                        
-        
+                                
+                            elif self.buttonList[1].collidepoint(mouse_pos):
+                                self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze2()
+                                self.WIDTH = (self.cellSize * len(self.MAZE[0])) + (2 * self.cellPadding)
+                                self.HEIGHT = self.WIDTH + self.HEADER
+                                self.WINDOW = (self.WIDTH, self.HEIGHT)
+                                self.SCREEN = pygame.display.set_mode(self.WINDOW)
+                                self.drawMazeEnd(self.MAZE)
+                                
         self.SCREEN.fill(self.BlackColor)
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
         self.SOLVE_THREAD.start()
@@ -108,8 +108,10 @@ class robot1():
                         for i in range(len(maze)):
                             if maze[i] == 2:
                                 file.write("-")
+                                
                             elif maze[i] == 3:
                                 file.write("x")
+                                
                             else:
                                 file.write(" ")
                         file.write("\n")
@@ -120,6 +122,7 @@ class robot1():
                     for i in range(len(maze)):
                         if maze[i] == 2:
                             maze[i] = 0
+                            
                         elif maze[i] == 3:
                             maze[i] = 4
                 
@@ -179,6 +182,7 @@ class robot1():
         if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
             stop_thread(self.SOLVE_THREAD)
             self.SOLVE_THREAD = None
+            
         if self.mazeNumber == 1:
             self.mazeNumber = 2
             self.WIDTH = (self.cellSize * len(self.Maze1[0])) + (2 * self.cellPadding)
@@ -189,9 +193,11 @@ class robot1():
                 for i in range(len(maze)):
                     if maze[i] == 2 or maze[i] == 3:
                         maze[i] = 0
+                        
             self.currMaze = self.Maze1
             self.currEntrance = self.Entrance1
             self.currExit = self.Exit1
+            
         else: 
             self.mazeNumber = 1
             self.WIDTH = (self.cellSize * len(self.Maze2[0])) + (2 * self.cellPadding)
@@ -202,11 +208,14 @@ class robot1():
                 for i in range(len(maze)):
                     if maze[i] == 2 or maze[i] == 3:
                         maze[i] = 0
+                        
             self.currMaze = self.Maze2
             self.currEntrance = self.Entrance2
             self.currExit = self.Exit2
+            
         if len(self.currMaze[0]) < 15:
                 robot1.FONT_SIZE = 20
+                
         else:
                 robot1.FONT_SIZE = 25
              
@@ -216,9 +225,11 @@ class robot1():
             for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit(0)
+                        
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                             mouse_pos = pygame.mouse.get_pos()
                             #self.dispatcher_click(mouse_pos)
+                            
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
                                 robot1.refreshTime = pygame.time.get_ticks()
@@ -452,6 +463,7 @@ class ızgara1():
         response = urllib.request.urlopen(url)
         data = response.read()
         maze = []
+        
         for line in data.splitlines():
             row = [int(num) for num in line.decode('utf-8').strip()]
             maze.append(row)
@@ -468,6 +480,7 @@ class ızgara1():
                         Entrance.append(i)
                         Entrance.append(j)
                         break
+                    
         for i in range(len(maze[0])-1, -1, -1):
             if len(Exit) == 0:
                 for j in range(len(maze)-1, -1, -1):
@@ -475,6 +488,7 @@ class ızgara1():
                         Exit.append(j)
                         Exit.append(i)
                         break
+                    
         for Maze in maze:
             for i in range (len(Maze)):
                 if Maze[i] == 2 :
@@ -482,6 +496,7 @@ class ızgara1():
                 elif Maze[i] == 3:
                     Maze[i] = 6
             print(Maze)
+            
         return maze, Entrance, Exit
            
            
@@ -510,6 +525,7 @@ class ızgara1():
                         Entrance.append(i)
                         Entrance.append(j)
                         break
+                    
         for i in range(len(maze[0])-1, -1, -1):
             if len(Exit) == 0:
                 for j in range(len(maze)-1, -1, -1):
@@ -517,11 +533,14 @@ class ızgara1():
                         Exit.append(j)
                         Exit.append(i)
                         break
+        
         for Maze in maze:
-            for i in range (len(Maze)):
-                if Maze[i] == 2 or Maze[i] == 3:
-                    Maze[i] = 1
-            print(Maze)
+            for i in range(len(Maze)):
+                if Maze[i] == 2 :
+                    Maze[i] = 5
+                elif Maze[i] == 3:
+                    Maze[i] = 6    
+        
         return maze, Entrance, Exit
     
     
@@ -596,6 +615,7 @@ class robot2():
             for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit(0)
+                        
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                             mouse_pos = pygame.mouse.get_pos()
                             #self.dispatcher_click(mouse_pos)
@@ -625,10 +645,13 @@ class robot2():
                         for i in range(len(maze)):
                             if maze[i] == 2:
                                 file.write("-")
+                                
                             elif maze[i] == 3:
                                 file.write("*")
+                                
                             else:
                                 file.write(" ")
+                                
                         file.write("\n")
                 file.close()
                 
@@ -636,6 +659,7 @@ class robot2():
                     for i in range(len(maze)):
                         if maze[i] == 2:
                             maze[i] = 0
+                            
                         elif maze[i] == 3:
                             maze[i] = 4
                 
@@ -645,6 +669,7 @@ class robot2():
                     if self.SOLVE_THREAD is not None and self.SOLVE_THREAD.is_alive():
                         stop_thread(self.SOLVE_THREAD)
                         self.SOLVE_THREAD = None
+                        
                     exit(0)        
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
@@ -701,9 +726,11 @@ class robot2():
             for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit(0)
+                        
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                             mouse_pos = pygame.mouse.get_pos()
                             #self.dispatcher_click(mouse_pos)
+                            
                             if self.buttonList[0].collidepoint(mouse_pos):
                                 run = False
                                 robot2.refreshTime = pygame.time.get_ticks()
@@ -892,17 +919,22 @@ class robot2():
     def valid(self, maze, x, y):
         if x < 0 or y < 0:
             return False
+        
         if x >= len(maze) or y >= len(maze):
             return False
+        
         val = maze[y][x]
+        
         if val == 1 or val == 3:
             return False
+        
         return val, x, y
 
 
     def neighbors(self, maze, pos):
         x, y = pos
         t, r, d, l = self.valid(maze, x, y - 1), self.valid(maze, x + 1, y), self.valid(maze, x, y + 1), self.valid(maze, x - 1, y)
+        
         return t, r, d, l
 
 
@@ -912,17 +944,21 @@ class robot2():
             print("cell: ",cell)
             if cell:
                 arr.append(cell[0])
+                
             else:
                 arr.append(3)
+                
         return cells[arr.index(min(arr))]
 
 
     def solve_maze(self, maze, pos, end, callback):
         time.sleep(robot2.waitTime)
+        
         # Çıkışa Ulaşmak
         if pos[0] == end[0] and pos[1] == end[1]:
             maze[pos[1]][pos[0]] = 2
             return True
+        
         # 4 bitişik pozisyon al
         t, r, d, l = self.neighbors(maze, pos)
         
@@ -937,14 +973,18 @@ class robot2():
             print("nextPos: ",next_pos)
             if next_pos[0] == 2:
                 maze[pos[1]][pos[0]] = 3
+                
             else:
                 maze[pos[1]][pos[0]] = 2
             callback(maze, next_pos)
+            
             return self.solve_maze(maze, (next_pos[1], next_pos[2]), end, callback)
+        
         else:
             print("next_pos: ",next_pos)
             maze[pos[1]][pos[0]] = 3
             callback(maze, next_pos)
+            
             return False
 
 
@@ -965,10 +1005,12 @@ def check_neighbors(maze, x, y, width, height, checklist):
     if y < height - 1:
         if not maze.visited(2 * x + 1, 2 * (y + 1) + 1):
             directions.append("DOWN")
+            
     print("Directions: ",directions)        
     if len(directions) != 0:
         direction = choice(directions)
         print(direction)
+        
         if direction == "LEFT":
             maze.set_maze(2 * (x - 1) + 1, 2 * y + 1, 0)
             maze.set_maze(2 * x, 2 * y + 1, 0)
@@ -988,7 +1030,9 @@ def check_neighbors(maze, x, y, width, height, checklist):
             maze.set_maze(2 * x + 1, 2 * (y + 1) + 1, 0)
             maze.set_maze(2 * x + 1, 2 * y + 2, 0)
             checklist.append((x, y + 1))
+            
         return True
+    
     return False
 
 
@@ -1015,6 +1059,7 @@ class ızgara2():
     def set_maze(self, x, y, value):
         if value == 0:
             self.maze[y][x] = 0
+            
         else:
             self.maze[y][x] = 1
 
@@ -1034,9 +1079,11 @@ class ızgara2():
         maze.set_maze(2 * start_x + 1, 2 * start_y + 1, 1)
         checklist = [(start_x, start_y)]
         print("Checklist: ",checklist)
+        
         while len(checklist):
             entry = choice(checklist)
             print(entry)
+            
             if not check_neighbors(maze, entry[0], entry[1], width, height, checklist):
                 checklist.remove(entry)
 
@@ -1050,11 +1097,13 @@ class ızgara2():
                 print("Giriş: ",başlangıç)
                 break
         çıkış = []
+        
         for i in range(maze.height - 1, 0, -1):
             if maze.maze[i][maze.width - 2] == 0:
                 maze.set_maze(maze.width - 1, i, 0)
                 çıkış = [maze.width - 1, i]
                 break
+            
         return başlangıç, çıkış
 
 
