@@ -90,7 +90,7 @@ class robot1():
                                 robot1.refreshTime = pygame.time.get_ticks()
                         
         
-        
+        self.SCREEN.fill(self.BlackColor)
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
         self.SOLVE_THREAD.start()
         self.infoVisible = False
@@ -139,6 +139,7 @@ class robot1():
                             robot1.kareSayısı = 0
                             robot1.enKısaYol = 0
                             robot1.waitTime = 0.1
+                            self.SCREEN.fill(self.BlackColor)
                             self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
                             self.SOLVE_THREAD.start()
                             self.infoVisible = False
@@ -225,14 +226,13 @@ class robot1():
                             elif self.buttonList[1].collidepoint(mouse_pos):
                                 self.changeMaze()
                                 
-                                
+        self.SCREEN.fill(self.BlackColor)          
         self.SOLVE_THREAD = threading.Thread(target = self.solve_maze, args = (self.currMaze, self.currEntrance, self.currExit, self.drawMazeStart))
         self.SOLVE_THREAD.start()
     
     
     
     def drawMazeStart(self, maze, curPos):
-        #self.SCREEN.fill(self.GrayColor)
         self.drawButton(2, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Çalıştır')
             
         self.drawButton(2 + (self.WIDTH - 4)/3, 2, (self.WIDTH - 4)/3, self.HEADER - 4, 'Değiştir')
@@ -241,7 +241,7 @@ class robot1():
             
         #self.drawButton(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
         
-        for y in range(len(maze)):
+        for y in range(len(maze)): 
             for x in range(len(maze)):
                 cell = maze[y][x]
                 print("currPos[1]: ", curPos[1])
@@ -249,75 +249,116 @@ class robot1():
                     
                 if maze[y][x] == 2:
                     color = self.GreenColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                     
                 elif maze[y][x] == 3:
                     color = self.RedColor
-                
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
+                    
                 #1
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                     
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 1:
-                    color = self.BlackColor
-                
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
+                    
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                     
                 elif y == curPos[2] + 1 and  x == curPos[1] and maze[y][x] == 6:
-                    color = self.AquaColor
-                
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
+                    
                 #2    
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                     
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 1:
-                    color = self.BlackColor
-                
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
+                    
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                     
                 elif y == curPos[2] and  x == curPos[1] + 1 and maze[y][x] == 6:
-                    color = self.AquaColor
-                
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
+                    
                 #3    
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                     
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 1:
-                    color = self.BlackColor
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                 
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                     
                 elif y == curPos[2] and  x == curPos[1] - 1 and maze[y][x] == 6:
-                    color = self.AquaColor
-                
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
+                    
                 #4
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                     
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 1:
-                    color = self.BlackColor
-                
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
+                    
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                     
                 elif y == curPos[2] - 1 and  x == curPos[1] and maze[y][x] == 6:
-                    color = self.AquaColor
-                
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                 
                 else:
                     color = self.GrayColor
-                
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                 
                 if x == curPos[1] and y == curPos[2]:
                     color = self.BlueColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
                     
                 if x == self.currEntrance[0] and y == self.currEntrance[1]:
                     color = self.YellowColor
-                    
-                    
-                self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize -1, color)
+                
             pygame.display.flip()
   
             
@@ -338,25 +379,36 @@ class robot1():
             for x in range(size):
                 cell = maze[y][x]
                 if maze[y][x] == 1:
-                    color = self.BlackColor
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
                     
                 elif maze[y][x] == 5:
                     color = self.OrangeColor
-                
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    
                 elif maze[y][x] == 6:
-                    color = self.AquaColor
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
                     
                 elif maze[y][x] == 2:
                     robot1.kareSayısı += 1
                     robot1.enKısaYol += 1
                     color = self.GreenColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize - 1, color)
                     
                 elif maze[y][x] == 3:
                     robot1.kareSayısı += 1
                     color = self.RedColor
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize - 1, color)
+                    
                 else:
                     color = self.WhiteColor
-                self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize - 1, color)
+                    self.draw_rect(self.cellPadding + x * self.cellSize, self.HEADER + self.cellPadding + y * self.cellSize, self.cellSize - 1, color)
+                    
         pygame.display.flip()        
     
     
@@ -554,7 +606,7 @@ class robot2():
                             elif self.buttonList[1].collidepoint(mouse_pos):
                                 self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze(menu.satır, menu.sutun)
                                 self.draw_mazeEnd(self.MAZE)
-        
+        self.SCREEN.fill(self.BlackColor)
         self.SOLVE_THREAD = threading.Thread(target= self.solve_maze, args=(self.MAZE, self.ENTRANCE, self.EXIT, self.draw_mazeStart))
         self.SOLVE_THREAD.start()
         self.infoVisible = False
@@ -630,6 +682,7 @@ class robot2():
 
 
     def refresh(self):
+        self.SCREEN.fill(self.BlackColor)
         robot2.refreshTime = pygame.time.get_ticks()
         pygame.time.set_timer = 0
         robot2.waitTime = 0.1
@@ -676,110 +729,113 @@ class robot2():
                 cell = maze[y][x]
                 print("curr_pos[1]: ",cur_pos[1])
                 print("curr_pos[2]: ",cur_pos[2])
-                """
-                if x == cur_pos[1] + 1:
-                    cellNeighbor = maze[y][x+1]
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    self.draw_rect(cell_padding + (x+1) * cell_size, self.HEADER + cell_padding + y * cell_size, cell_size - 1, color)
-                    #pygame.display.flip()
-                        
-                elif x == cur_pos[1] - 1 and y == cur_pos[2]:
-                    cellNeighbor = maze[y][x-1]
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    self.draw_rect(cell_padding + (x-1) * cell_size, self.HEADER + cell_padding + y * cell_size, cell_size - 1, color)
-                    #pygame.display.flip()
-                    
-                elif y == cur_pos[2] + 1 and x == cur_pos[1]:
-                    cellNeighbor = maze[y+1][x]
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    self.draw_rect(cell_padding + x * cell_size, self.HEADER + cell_padding + (y+1) * cell_size, cell_size - 1, color)
-                    #pygame.display.flip()
-                    
-                elif y == cur_pos[2] - 1 and x == cur_pos[1]:
-                    cellNeighbor = maze[y-1][x]
-                    if cellNeighbor == 1:
-                        color = self.BlackColor
-                    
-                    elif cellNeighbor == 0:
-                        color = self.WhiteColor
-                    self.draw_rect(cell_padding + x * cell_size, self.HEADER + cell_padding + (y-1) * cell_size, cell_size - 1, color)
-                    #pygame.display.flip()
-                    """
                 if cell == 2:
                     color = self.GreenColor
-                
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
+                    
                 elif cell == 3:
                     color = self.RedColor
-
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                 
                 #1
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                     
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 1:
-                    color = self.BlackColor
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                     
                 elif y == cur_pos[2] + 1 and  x == cur_pos[1] and maze[y][x] == 6:
-                    color = self.AquaColor
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 #2    
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 1:
-                    color = self.BlackColor
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] + 1 and maze[y][x] == 6:
-                    color = self.AquaColor
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 #3    
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 1:
-                    color = self.BlackColor
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                     
                 elif y == cur_pos[2] and  x == cur_pos[1] - 1 and maze[y][x] == 6:
-                    color = self.AquaColor
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 #4
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 0:
                     color = self.WhiteColor
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                     
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 1:
-                    color = self.BlackColor
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                 
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 5:
-                    color = self.OrangeColor
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
                     
                 elif y == cur_pos[2] - 1 and  x == cur_pos[1] and maze[y][x] == 6:
-                    color = self.AquaColor
-                
-                
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
+                    
                 else:
                     color = self.GrayColor
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                     
                 if x == cur_pos[1] and y == cur_pos[2]:
                     color = self.BlueColor
-                self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
         pygame.display.flip()
 
     def draw_mazeEnd(self, maze):
@@ -798,21 +854,38 @@ class robot2():
             for x in range(size):
                 cell = maze[y][x]
                 
-                if cell==1:
-                    color = self.BlackColor
+                if cell == 1:
+                    image = pygame.image.load("Engel1.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
+                
+                elif cell == 5:
+                    image = pygame.image.load("Engel2.jpg")
+                    image = pygame.transform.scale(image, (self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)))
+                    self.SCREEN.blit(image, ((self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size))
+                    pygame.display.flip()
+                    
+                elif cell == 6:
+                    image = pygame.image.load("Engel3.jpg")
+                    image = pygame.transform.scale(image, (self.cellSize - (self.cellPadding*2), self.cellSize - (self.cellPadding*2)))
+                    self.SCREEN.blit(image, ((self.cellPadding*2) + x * self.cellSize, self.HEADER + (self.cellPadding*2) + y * self.cellSize))
+                    pygame.display.flip()
                     
                 elif cell == 2:
                     robot2.kareSayısı += 1
                     robot2.enKısaYol += 1
                     color = self.GreenColor
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                     
                 elif cell == 3:
                     robot2.kareSayısı += 1
                     color = self.RedColor
-                    
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
                 else:
                     color = self.WhiteColor
-                self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
+                    self.draw_rect(self.cell_padding + x * self.cell_size, self.HEADER + self.cell_padding + y * self.cell_size, self.cell_size - 1, color)
+        
         pygame.display.flip()
     
     
