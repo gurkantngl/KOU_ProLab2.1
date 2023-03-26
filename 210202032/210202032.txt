@@ -61,7 +61,7 @@ class robot1():
 
         
         self.WIDTH = (self.cellSize * len(self.Maze1[0])) + (2 * self.cellPadding)
-        self.HEIGHT = (self.cellSize * len(self.Maze1)) + (2 * self.cellPadding) + self.HEADER
+        self.HEIGHT = self.WIDTH + self.HEADER
         self.WINDOW = (self.WIDTH, self.HEIGHT)
         self.SCREEN = pygame.display.set_mode(self.WINDOW)
         self.drawMazeEnd(self.currMaze)
@@ -81,7 +81,7 @@ class robot1():
                             elif self.buttonList[1].collidepoint(mouse_pos):
                                 self.MAZE, self.ENTRANCE, self.EXIT = self.ızgara.generate_maze2()
                                 self.WIDTH = (self.cellSize * len(self.MAZE[0])) + (2 * self.cellPadding)
-                                self.HEIGHT = (self.cellSize * len(self.MAZE)) + (2 * self.cellPadding) + self.HEADER
+                                self.HEIGHT = self.WIDTH + self.HEADER
                                 self.WINDOW = (self.WIDTH, self.HEIGHT)
                                 self.SCREEN = pygame.display.set_mode(self.WINDOW)
                                 self.drawMazeEnd(self.MAZE)
@@ -180,7 +180,7 @@ class robot1():
         if self.mazeNumber == 1:
             self.mazeNumber = 2
             self.WIDTH = (self.cellSize * len(self.Maze1[0])) + (2 * self.cellPadding)
-            self.HEIGHT = (self.cellSize * len(self.Maze1)) + (2 * self.cellPadding) + self.HEADER
+            self.HEIGHT = self.WIDTH + self.HEADER
             self.WINDOW = (self.WIDTH, self.HEIGHT)
             self.SCREEN = pygame.display.set_mode(self.WINDOW)
             for maze in self.currMaze:
@@ -195,7 +195,7 @@ class robot1():
         else: 
             self.mazeNumber = 1
             self.WIDTH = (self.cellSize * len(self.Maze2[0])) + (2 * self.cellPadding)
-            self.HEIGHT = (self.cellSize * len(self.Maze2)) + (2 * self.cellPadding) + self.HEADER
+            self.HEIGHT = self.WIDTH + self.HEADER
             self.WINDOW = (self.WIDTH, self.HEIGHT)
             self.SCREEN = pygame.display.set_mode(self.WINDOW)
             for maze in self.currMaze:
@@ -575,7 +575,7 @@ class robot2():
         self.HEADER = 40
         self.cell_padding = 5
         self.WIDTH = (self.cell_size * menu.sutun) + (2 * self.cell_padding)
-        self.HEIGHT = (self.cell_size * menu.satır) + (2 * self.cell_padding) + self.HEADER
+        self.HEIGHT = self.WIDTH + self.HEADER
         self.WINDOW = (self.WIDTH, self.HEIGHT)
         self.TITLE = "Problem2"
         self.SCREEN = pygame.display.set_mode(self.WINDOW)
@@ -866,16 +866,12 @@ class robot2():
         #self.draw_button(2 + ((self.WIDTH - 4)/4) * 3, 2, (self.WIDTH - 4)/4, self.HEADER - 4, 'Son')
 
         size = len(maze)
-        self.cell_padding = 5
+        self.cell_padding = (self.WIDTH - (self.cell_size * size)) / 2
         for y in range(size):
             for x in range(size):
                 cell = maze[y][x]
                 engelLocation = (self.cell_padding*2) + x * self.cell_size, self.HEADER + (self.cell_padding*2) + y * self.cell_size
                 engelSize = self.cell_size - (self.cell_padding*2), self.cell_size - (self.cell_padding*2)
-                print("cellSize: ",self.cell_size)
-                print("cellPadding: ",self.cell_padding)
-                print("engelSize: ",engelSize)
-                print("engelLocation: ",engelLocation)
                 if cell == 1:
                     image = pygame.image.load("Engel1.jpg")
                     image = pygame.transform.scale(image, engelSize)
@@ -1048,17 +1044,11 @@ class ızgara2():
                 başlangıç = [0, i]
                 break
         çıkış = []
-
-        isExit = False
-        for j in range(maze.width , 0, -1):
-            if not isExit:
-                for i in range(maze.height - 1, 0, -1):
-                    if maze.maze[i][j - 2] == 0:
-                        maze.set_maze(j - 1, i, 0)
-                        çıkış = [j - 1, i]
-                        isExit = True
-                        break
-            else:
+        
+        for i in range(maze.height - 1, 0, -1):
+            if maze.maze[i][maze.width - 2] == 0:
+                maze.set_maze(maze.width - 1, i, 0)
+                çıkış = [maze.width - 1, i]
                 break
             
         return başlangıç, çıkış
